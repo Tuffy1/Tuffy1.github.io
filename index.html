@@ -229,6 +229,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/07/作用域与作用域链/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/07/作用域与作用域链/" itemprop="url">作用域与作用域链</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-07T11:12:05+08:00">
+                2019-09-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><h3 id="全局作用域-函数作用域-块级作用域"><a href="#全局作用域-函数作用域-块级作用域" class="headerlink" title="全局作用域/函数作用域/块级作用域"></a>全局作用域/函数作用域/块级作用域</h3><p>1.标识有效范围</p>
+<p>首先看一段代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> out = <span class="string">'a'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> inner = <span class="string">'b'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(out + inner);</span><br><span class="line">&#125;</span><br><span class="line">foo(); <span class="comment">// ab</span></span><br><span class="line"><span class="built_in">console</span>.log(out); <span class="comment">// a</span></span><br><span class="line"><span class="built_in">console</span>.log(inner); <span class="comment">// 报错：inner is not defined</span></span><br></pre></td></tr></table></figure>
+<p>在全局中定义的<strong>out</strong>在函数内外都可以打印，而foo函数内变量只有在函数中才可访问，函数外访问会报错。<br>上面的代码中，<br>全局作用域的标识有：out(变量)，foo(函数声明)；</p>
+<p>局部作用域（函数作用域）的标识有：inner(变量)；<br>当访问变量时，内层作用域先会在其局部作用域中查找该变量，若是找不到，则会往上一级找，本例子中，foo函数要访问out变量，先会在foo函数中查找，找不到后，往上一级（全局作用域）查找；而在全局访问inner变量时，在全局作用域中找不到该变量，（全局已经是最外层的作用域），则会直接报错。</p>
+<p>块级作用域通过let或const来进行声明，作用范围是一个函数内部，或者一个代码块（花括号内，比如switch，for，if…）内部</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i += <span class="number">1</span>) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i); <span class="comment">// 0 1 2 3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(i); <span class="comment">// 报错：i is not defined</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i += <span class="number">1</span>) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i); <span class="comment">// 0 1 2 3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(i); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+<p>上面例子中，使用let声明i，在for循环内部可以访问i，但是外部不可以。而如果是使用var声明，那么i是一个全局作用域的变量，在for循环外同样可以获取。</p>
+<p>2.变量声明</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(b); <span class="comment">// undefined</span></span><br><span class="line">  <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">bar();</span><br></pre></td></tr></table></figure>
+<p>在上面bar函数中，访问b变量在声明赋值b变量的语句之前，但是console.log语句并不会报错，只是打印出undefined。这是因为变量提升。当函数开始执行前，作用域中的变量声明会提升到函数最顶部，所以这个时候访问b，只是访问了一个声明但未赋值的变量，效果类似于下面：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b;</span><br><span class="line">  <span class="built_in">console</span>.log(b); <span class="comment">// undefined</span></span><br><span class="line">  b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">bar();</span><br></pre></td></tr></table></figure>
+<p>再看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a); <span class="comment">// undefined</span></span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">20</span>; <span class="comment">// 由于变量提升，当前作用域已经有自己的a，第一次console.log为undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(a); <span class="comment">// 20</span></span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>但是let声明的变量不会提升，直到它们的定义被执行时才初始化,所以在声明语句前就访问是会报错的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(b); <span class="comment">// 报错：Cannot access 'b' before initialization</span></span><br><span class="line">  <span class="keyword">let</span> b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">bar();</span><br></pre></td></tr></table></figure>
+<p>变量b从块顶部到初始化处理的处于“暂存死区”中</p>
+<h3 id="词法作用域-动态作用域"><a href="#词法作用域-动态作用域" class="headerlink" title="词法作用域/动态作用域"></a>词法作用域/动态作用域</h3><p>词法作用域在词法分析阶段确定，不会改变，依据的是变量和函数的声明位置，也叫静态作用域；动态作用域在执行阶段确定，依据的是函数的调用关系。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="string">'a'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="string">'b'</span>;</span><br><span class="line">  foo();</span><br><span class="line">&#125;</span><br><span class="line">bar();</span><br></pre></td></tr></table></figure>
+<p>当执行foo函数时，需要访问a，现在foo中查找a，找不到，到上一级作用域中查找，那么上一级是指哪一级？<br>如果按词法作用域，上面的执行结果是打印’a’：<br>现在各作用域的标识如下：<br>全局作用域：a,foo,bar<br>foo局部作用域：<br>bar局部作用域：a<br>因为是词法作用域，依据的是变量和函数的声明位置。foo是在全局中声明的，所以上一级是全局作用域，全局变量a的值为’a’，故打印’a’。</p>
+<p>如果按动态作用域，上面的执行结果是打印’b’：<br>因为是动态作用域，依据的是变量和函数的调用关系。foo是在bar函数中被调用的，所以上一级是bar，在bar局部作用域中查找a变量，找到其局部变量a值为’b’，故打印’b’。<br>// 函数调用重建词法作用域，循环不重建词法作用域</p>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h2><p>作用域链是可访问变量，对象，函数的集合。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="string">'a'</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b = <span class="string">'b'</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="string">'c'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  bar();</span><br><span class="line">&#125;</span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+<p>执行bar函数时作用域如下：</p>
+<p><img src="../images/scope1.jpeg" alt="&#39;scope-chain&#39;"></p>
+<p>作用域链中保存着在各级作用域中的可访问变量/函数，当前执行函数在作用域链的顶部，全局作用域在作用域链的底部。执行函数过程中，访问变量会沿着作用域链寻找。</p>
+<h2 id="执行期上下文"><a href="#执行期上下文" class="headerlink" title="执行期上下文"></a>执行期上下文</h2><p>执行期上下文分两个阶段：</p>
+<ol>
+<li>创建阶段：生成变量对象，建立作用域链，确定上下文（this）</li>
+<li>执行阶段：顺序执行代码<br>当执行上下文的生命周期结束，该执行上下文会被销毁，下次再执行该函数时会重新创建一个新的。（例外：闭包会阻止这个销毁）</li>
+</ol>
+<p>特别的，this永远指向调用它的对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">  bar: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">foo.bar(); <span class="comment">// &#123;bar: f&#125;.this指向foo</span></span><br><span class="line"><span class="keyword">var</span> f = foo.bar;</span><br><span class="line">f(); <span class="comment">// Window.this指向window对象</span></span><br></pre></td></tr></table></figure>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="string">'a'</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="string">'b'</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(a + b);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> inner();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> foo = outer();</span><br><span class="line">foo(); <span class="comment">// 'ab'</span></span><br></pre></td></tr></table></figure>
+<p>变量的生命周期在它声明时初始化，局部变量在函数执行完毕后销毁，全局变量在页面关闭后销毁。所以按理说上面foo函数访问a和b应该都是访问不到的，但是这里我们看到都可以正常打印出来，而这是闭包的作用。</p>
+<p>闭包是由函数以及创建该函数的词法环境组合而成，这个环境包含了这个闭包创建时所能访问的所有局部变量。<br>打印foo.prototype可以看到：</p>
+<p><img src="../images/scope2.png" alt="&#39;closure&#39;"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/19/es6-class及其继承实现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1607,137 +1763,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/14/hello-world/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="J.Y.">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="写字的地方">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/14/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-14T23:29:28+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1781,7 +1813,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -79,19 +79,20 @@
 
 
 
-<meta name="description" content="If-None-Match/EtagEtag 为服务器响应时所携带，是此资源的唯一标识，当资源做过修改时，其值也会修改If-None-Match 为上次请求服务器响应时的 Etag 值，与服务器新的 Etag 做比较。 If-Modified-Since/Last-ModifiedLast-Modified 为服务器响应时所携带，是此资源的上一次修改时间If-Modified-Since 为上次">
+<meta name="description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Http协议--缓存">
-<meta property="og:url" content="http://yoursite.com/2019/09/24/Http协议-缓存/index.html">
+<meta property="og:title" content="正则表达式方法 exec 与 match">
+<meta property="og:url" content="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/index.html">
 <meta property="og:site_name" content="写字的地方">
-<meta property="og:description" content="If-None-Match/EtagEtag 为服务器响应时所携带，是此资源的唯一标识，当资源做过修改时，其值也会修改If-None-Match 为上次请求服务器响应时的 Etag 值，与服务器新的 Etag 做比较。 If-Modified-Since/Last-ModifiedLast-Modified 为服务器响应时所携带，是此资源的上一次修改时间If-Modified-Since 为上次">
+<meta property="og:description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/images/Web缓存流程图.png">
-<meta property="og:updated_time" content="2019-09-24T15:02:05.151Z">
+<meta property="og:image" content="http://yoursite.com/2019/10/15/images/reg-exp-not-g.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/15/images/reg-exp-has-g.png">
+<meta property="og:updated_time" content="2019-10-15T15:39:41.553Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Http协议--缓存">
-<meta name="twitter:description" content="If-None-Match/EtagEtag 为服务器响应时所携带，是此资源的唯一标识，当资源做过修改时，其值也会修改If-None-Match 为上次请求服务器响应时的 Etag 值，与服务器新的 Etag 做比较。 If-Modified-Since/Last-ModifiedLast-Modified 为服务器响应时所携带，是此资源的上一次修改时间If-Modified-Since 为上次">
-<meta name="twitter:image" content="http://yoursite.com/images/Web缓存流程图.png">
+<meta name="twitter:title" content="正则表达式方法 exec 与 match">
+<meta name="twitter:description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/15/images/reg-exp-not-g.png">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/09/24/Http协议-缓存/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/">
 
 
 
 
 
-  <title>Http协议--缓存 | 写字的地方</title>
+  <title>正则表达式方法 exec 与 match | 写字的地方</title>
   
 
 
@@ -234,7 +235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/24/Http协议-缓存/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="J.Y.">
@@ -251,7 +252,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Http协议--缓存</h1>
+          <h1 class="post-title" itemprop="name headline">正则表达式方法 exec 与 match</h1>
         
 
         <div class="post-meta">
@@ -263,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-24T22:56:16+08:00">
-                2019-09-24
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-15T23:35:09+08:00">
+                2019-10-15
               </time>
             
 
@@ -282,8 +283,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/09/24/Http协议-缓存/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/24/Http协议-缓存/" itemprop="commentsCount"></span>
+                <a href="/2019/10/15/正则表达式方法-exec-与-match/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/10/15/正则表达式方法-exec-与-match/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -311,9 +312,15 @@
       
 
       
-        <p><img src="/images/Web缓存流程图.png" alt="&#39;Web缓存流程图&#39;"></p>
-<h3 id="If-None-Match-Etag"><a href="#If-None-Match-Etag" class="headerlink" title="If-None-Match/Etag"></a>If-None-Match/Etag</h3><p>Etag 为服务器响应时所携带，是此资源的唯一标识，当资源做过修改时，其值也会修改<br>If-None-Match 为上次请求服务器响应时的 Etag 值，与服务器新的 Etag 做比较。</p>
-<h3 id="If-Modified-Since-Last-Modified"><a href="#If-Modified-Since-Last-Modified" class="headerlink" title="If-Modified-Since/Last-Modified"></a>If-Modified-Since/Last-Modified</h3><p>Last-Modified 为服务器响应时所携带，是此资源的上一次修改时间<br>If-Modified-Since 为上次请求服务器响应时的 Last-Modified 值，与服务器新的 Last-Modified 做比较。</p>
+        <p>exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);<br>match 是一个 String 方法，意思是它的执行是：str.match(regexp);</p>
+<p>当不使用全局匹配时，两者可以得到相同的结果：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"abc1+abc2+abc3"</span>;</span><br><span class="line"><span class="keyword">var</span> regexp1 = <span class="regexp">/(abc)\d/</span>;</span><br><span class="line"></span><br><span class="line">str.match(regexp1); <span class="comment">// (2)["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp1.exec(str); <span class="comment">// (2)["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br></pre></td></tr></table></figure>
+<p>因为非全局匹配，它们得到了完全一样的结果“abc1”：</p>
+<p><img src="../images/reg-exp-not-g.png" alt="&#39;reg-exp-not-g&#39;"></p>
+<p>当使用全局匹配时，两者的行为表现就不一致了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"abc1+abc2+abc3"</span>;</span><br><span class="line"><span class="keyword">var</span> regexp2 = <span class="regexp">/(abc)\d/g</span>;</span><br><span class="line"></span><br><span class="line">str.match(regexp2); <span class="comment">// (3) ["abc1", "abc2", "abc3"]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc2", "abc", index: 5, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc3", "abc", index: 10, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// null</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br></pre></td></tr></table></figure>
+<p>使用全局匹配时，match 方法会得到所有匹配项，并作为一个数组返回；<br>而 exec 方法每次只得到一个，每一次执行 exec 再接着往下找,直到找不到返回 null，之后再执行则再次从头匹配</p>
+<p><img src="../images/reg-exp-has-g.png" alt="&#39;reg-exp-has-g&#39;"></p>
 
       
     </div>
@@ -338,8 +345,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/07/作用域与作用域链/" rel="next" title="作用域与作用域链">
-                <i class="fa fa-chevron-left"></i> 作用域与作用域链
+              <a href="/2019/09/24/Http协议-缓存/" rel="next" title="Http协议--缓存">
+                <i class="fa fa-chevron-left"></i> Http协议--缓存
               </a>
             
           </div>
@@ -347,10 +354,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/15/正则表达式方法-exec-与-match/" rel="prev" title="正则表达式方法 exec 与 match">
-                正则表达式方法 exec 与 match <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -409,17 +412,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -470,22 +464,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#If-None-Match-Etag"><span class="nav-number">1.</span> <span class="nav-text">If-None-Match/Etag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#If-Modified-Since-Last-Modified"><span class="nav-number">2.</span> <span class="nav-text">If-Modified-Since/Last-Modified</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

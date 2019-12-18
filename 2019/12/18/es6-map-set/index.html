@@ -79,20 +79,17 @@
 
 
 
-<meta name="description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
+<meta name="description" content="MapMap 与 Object 一些区别：  Map 是有序的； Map 有 size 方法； Map 键可以为任意类型，不止 string 和 symbol； Map 有 entries 方法，可使用 for…of 得到键值数组；  WeakMapMap 与 WeakMap 区别： WeakMap 只有 get, set, delete, has 方法，没有遍历相关方法。因为 WeakMap 对">
 <meta property="og:type" content="article">
-<meta property="og:title" content="正则表达式方法 exec 与 match">
-<meta property="og:url" content="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/index.html">
+<meta property="og:title" content="es6 Map,WeakMap 与 Set,WeakSet">
+<meta property="og:url" content="http://yoursite.com/2019/12/18/es6-map-set/index.html">
 <meta property="og:site_name" content="写字的地方">
-<meta property="og:description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
+<meta property="og:description" content="MapMap 与 Object 一些区别：  Map 是有序的； Map 有 size 方法； Map 键可以为任意类型，不止 string 和 symbol； Map 有 entries 方法，可使用 for…of 得到键值数组；  WeakMapMap 与 WeakMap 区别： WeakMap 只有 get, set, delete, has 方法，没有遍历相关方法。因为 WeakMap 对">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/10/15/images/reg-exp-not-g.png">
-<meta property="og:image" content="http://yoursite.com/2019/10/15/images/reg-exp-has-g.png">
-<meta property="og:updated_time" content="2019-10-15T15:39:41.553Z">
+<meta property="og:updated_time" content="2019-12-18T14:56:59.531Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="正则表达式方法 exec 与 match">
-<meta name="twitter:description" content="exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);match 是一个 String 方法，意思是它的执行是：str.match(regexp); 当不使用全局匹配时，两者可以得到相同的结果： 12345var str = &quot;abc1+abc2+abc3&quot;;var regexp1 = /(abc)\d/;str.match(regexp1); // (2)[&quot;">
-<meta name="twitter:image" content="http://yoursite.com/2019/10/15/images/reg-exp-not-g.png">
+<meta name="twitter:title" content="es6 Map,WeakMap 与 Set,WeakSet">
+<meta name="twitter:description" content="MapMap 与 Object 一些区别：  Map 是有序的； Map 有 size 方法； Map 键可以为任意类型，不止 string 和 symbol； Map 有 entries 方法，可使用 for…of 得到键值数组；  WeakMapMap 与 WeakMap 区别： WeakMap 只有 get, set, delete, has 方法，没有遍历相关方法。因为 WeakMap 对">
 
 
 
@@ -122,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/">
+  <link rel="canonical" href="http://yoursite.com/2019/12/18/es6-map-set/">
 
 
 
 
 
-  <title>正则表达式方法 exec 与 match | 写字的地方</title>
+  <title>es6 Map,WeakMap 与 Set,WeakSet | 写字的地方</title>
   
 
 
@@ -235,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/15/正则表达式方法-exec-与-match/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/18/es6-map-set/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="J.Y.">
@@ -252,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">正则表达式方法 exec 与 match</h1>
+          <h1 class="post-title" itemprop="name headline">es6 Map,WeakMap 与 Set,WeakSet</h1>
         
 
         <div class="post-meta">
@@ -264,8 +261,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-15T23:35:09+08:00">
-                2019-10-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-18T22:52:16+08:00">
+                2019-12-18
               </time>
             
 
@@ -283,8 +280,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/10/15/正则表达式方法-exec-与-match/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/10/15/正则表达式方法-exec-与-match/" itemprop="commentsCount"></span>
+                <a href="/2019/12/18/es6-map-set/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/12/18/es6-map-set/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -312,15 +309,26 @@
       
 
       
-        <p>exec 是一个 RegExp 方法，意思是它的执行是：regexp.exec(str);<br>match 是一个 String 方法，意思是它的执行是：str.match(regexp);</p>
-<p>当不使用全局匹配时，两者可以得到相同的结果：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"abc1+abc2+abc3"</span>;</span><br><span class="line"><span class="keyword">var</span> regexp1 = <span class="regexp">/(abc)\d/</span>;</span><br><span class="line"></span><br><span class="line">str.match(regexp1); <span class="comment">// (2)["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp1.exec(str); <span class="comment">// (2)["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br></pre></td></tr></table></figure>
-<p>因为非全局匹配，它们得到了完全一样的结果“abc1”：</p>
-<p><img src="../images/reg-exp-not-g.png" alt="&#39;reg-exp-not-g&#39;"></p>
-<p>当使用全局匹配时，两者的行为表现就不一致了：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"abc1+abc2+abc3"</span>;</span><br><span class="line"><span class="keyword">var</span> regexp2 = <span class="regexp">/(abc)\d/g</span>;</span><br><span class="line"></span><br><span class="line">str.match(regexp2); <span class="comment">// (3) ["abc1", "abc2", "abc3"]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc2", "abc", index: 5, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc3", "abc", index: 10, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// null</span></span><br><span class="line">regexp2.exec(str); <span class="comment">// (2) ["abc1", "abc", index: 0, input: "abc1+abc2+abc3", groups: undefined...]</span></span><br></pre></td></tr></table></figure>
-<p>使用全局匹配时，match 方法会得到所有匹配项，并作为一个数组返回；<br>而 exec 方法每次只得到一个，每一次执行 exec 再接着往下找,直到找不到返回 null，之后再执行则再次从头匹配</p>
-<p><img src="../images/reg-exp-has-g.png" alt="&#39;reg-exp-has-g&#39;"></p>
+        <h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>Map 与 Object 一些区别：</p>
+<ol>
+<li>Map 是有序的；</li>
+<li>Map 有 size 方法；</li>
+<li>Map 键可以为任意类型，不止 string 和 symbol；</li>
+<li>Map 有 entries 方法，可使用 for…of 得到键值数组；</li>
+</ol>
+<h2 id="WeakMap"><a href="#WeakMap" class="headerlink" title="WeakMap"></a>WeakMap</h2><p>Map 与 WeakMap 区别：</p>
+<p>WeakMap 只有 get, set, delete, has 方法，没有遍历相关方法。因为 WeakMap 对其键是弱引用，其键是不可枚举的。</p>
+<blockquote>
+<p>强引用：当某变量被强引用时，即使该变量设为 null，该块内容也不会被垃圾回收，因为还存在着引用它的地方。</p>
+</blockquote>
+<blockquote>
+<p>WeakMap 的键是弱引用，它不能阻止对应的 key 的内容被垃圾回收，当被回收时，对应的键值对也自动消失。</p>
+</blockquote>
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>Set 是一组值的集合，且其中的元素都是唯一的。像对象那样拥有 keys/values（entries）方法，基本操作方法：add/delete/has/size，同时可以与 Array 相互转换。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数组转为Set</span></span><br><span class="line"><span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> set1 = <span class="keyword">new</span> <span class="built_in">Set</span>(arr1);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Set转为数组</span></span><br><span class="line"><span class="keyword">const</span> arr2 = [...set1];</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line"><span class="keyword">const</span> arr3 = <span class="built_in">Array</span>.from(set1);</span><br></pre></td></tr></table></figure>
+<p>利用 Set 中元素的唯一性以及与数组的互换可以达到数组去重，取交集，取差集等目的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 去重</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">arr = [...new <span class="built_in">Set</span>(arr)]; <span class="comment">// [1, 2, 3]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 取交集</span></span><br><span class="line"><span class="keyword">let</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="keyword">let</span> arr2 = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line"><span class="keyword">let</span> set2 = <span class="keyword">new</span> <span class="built_in">Set</span>(arr2);</span><br><span class="line">arr = arr1.filter(<span class="function"><span class="params">i</span> =&gt;</span> set2.has(i)); <span class="comment">// [2, 3, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 取差集</span></span><br><span class="line">arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line">arr2 = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line">set2 = <span class="keyword">new</span> <span class="built_in">Set</span>(arr2);</span><br><span class="line">arr = arr1.filter(<span class="function"><span class="params">i</span> =&gt;</span> !set2.has(i)); <span class="comment">// [1, 4]</span></span><br></pre></td></tr></table></figure>
+<h2 id="WeakSet"><a href="#WeakSet" class="headerlink" title="WeakSet"></a>WeakSet</h2><p>Set 与 WeakSet 的关系，与 Map 同 WeakMap 的关系类似，WeakSet 中的值只能存放对象的引用，不能是基本数据类型，同时对其元素只保持了弱引用（不可枚举）。</p>
 
       
     </div>
@@ -345,8 +353,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/24/Http协议-缓存/" rel="next" title="Http协议--缓存">
-                <i class="fa fa-chevron-left"></i> Http协议--缓存
+              <a href="/2019/11/07/File-base64-blob-与-canvas/" rel="next" title="File, base64, blob 与 canvas">
+                <i class="fa fa-chevron-left"></i> File, base64, blob 与 canvas
               </a>
             
           </div>
@@ -354,10 +362,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/17/typescript学习/" rel="prev" title="typescript 学习（一）">
-                typescript 学习（一） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -416,8 +420,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -468,6 +481,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">1.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakMap"><span class="nav-number">2.</span> <span class="nav-text">WeakMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set"><span class="nav-number">3.</span> <span class="nav-text">Set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakSet"><span class="nav-number">4.</span> <span class="nav-text">WeakSet</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

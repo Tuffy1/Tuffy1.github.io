@@ -229,6 +229,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/10/js隐式转换/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/10/js隐式转换/" itemprop="url">js隐式转换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-10T09:47:33+08:00">
+                2019-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一-发生隐式转换的情况"><a href="#一-发生隐式转换的情况" class="headerlink" title="一 发生隐式转换的情况"></a>一 发生隐式转换的情况</h2><p>js的一些运算中，当遇到两种不同类型的操作数值，会进行隐式转换，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> - <span class="string">'1'</span> <span class="comment">// 0</span></span><br><span class="line"><span class="number">1</span> - <span class="literal">undefined</span> <span class="comment">// NaN</span></span><br><span class="line"><span class="number">1</span> - <span class="literal">null</span> <span class="comment">// 1</span></span><br><span class="line"><span class="number">1</span> * &#123;&#125; <span class="comment">// NaN</span></span><br><span class="line"><span class="number">1</span> / [] <span class="comment">// Infinity</span></span><br><span class="line">+ &#123;&#125; <span class="comment">// NaN</span></span><br><span class="line">+ [] <span class="comment">// 0</span></span><br><span class="line"><span class="number">1</span> + <span class="string">'1'</span> <span class="comment">// '11'</span></span><br><span class="line"><span class="number">1</span> + &#123;&#125; <span class="comment">// '1[Object Object]</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">null</span> <span class="comment">// 1</span></span><br><span class="line"><span class="string">'1'</span> == <span class="literal">true</span> <span class="comment">// true</span></span><br><span class="line">[] == &#123;&#125; <span class="comment">// false</span></span><br><span class="line">[] == <span class="number">0</span> <span class="comment">// true</span></span><br><span class="line">&#123;&#125; == [] <span class="comment">// Uncaught SyntaxError: Unexpected token ==</span></span><br><span class="line">&#123;&#125; + [] <span class="comment">// 0</span></span><br><span class="line">[] + &#123;&#125; <span class="comment">// "[object Object]"</span></span><br><span class="line">&#123;&#125; + &#123;&#125; <span class="comment">// chrome运行结果:"[object Object][object Object]"; firefox运行结果：NaN</span></span><br></pre></td></tr></table></figure>
+<h2 id="二-隐式转换过程涉及的三个主要函数"><a href="#二-隐式转换过程涉及的三个主要函数" class="headerlink" title="二 隐式转换过程涉及的三个主要函数"></a>二 隐式转换过程涉及的三个主要函数</h2><h3 id="1-ToPrimitive-input-type"><a href="#1-ToPrimitive-input-type" class="headerlink" title="1 ToPrimitive(input, type?)"></a>1 ToPrimitive(input, type?)</h3><p>这是一个将值转为原始值的函数。input传的是要转换的值，type可为‘Number’/‘String’两种可能。<br>此函数的大体操作是：</p>
+<p>当 type === ‘Number’ 时，</p>
+<ol>
+<li>（1）input为原始值，直接返回该值；（2）否则执行<strong>input.valueOf()</strong>；</li>
+<li>（1）上一步所得是原始值，直接返回该值；（2）所得依然是object类型，将所得执行<strong>toString()</strong>；</li>
+<li>（2）上一步所得是原始值，直接返回该值；（2）所得不是原始值，抛出错误；</li>
+</ol>
+<p>当 type ==== ‘String’ 时，</p>
+<ol>
+<li>（1）input为原始值，直接返回该值；（2）否则执行<strong>input.toString()</strong>；</li>
+<li>（1）所得是原始值，直接返回该值；（2）所得依然是object类型，将所得执行<strong>valueOf()</strong>；</li>
+<li>（2）上一步所得是原始值，直接返回该值；（2）所得不是原始值，抛出错误；</li>
+</ol>
+<p>当隐式转换时，一般情况下 type 默认为 Number。除非 input 为 Date 类型，我们可以看一下 Date 类型数据在执行 valueOf() / toString() 这两个函数顺序不同时得到的结果时怎样的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> date1 = <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">// date1: Fri Aug 09 2019 22:42:33 GMT+0800 (中国标准时间)</span></span><br><span class="line"><span class="keyword">var</span> valueDate1 = date1.valueOf(); <span class="comment">// valueDate1: 1565361753409</span></span><br><span class="line"><span class="keyword">var</span> result1 = valueDate1.toString(); <span class="comment">// result1: '1565361753409'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> date2 = <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">// date2: Fri Aug 09 2019 22:42:33 GMT+0800 (中国标准时间)</span></span><br><span class="line"><span class="keyword">var</span> valueDate2 = date2.toString(); <span class="comment">// valueDate2: 'Fri Aug 09 2019 22:42:33 GMT+0800 (中国标准时间)'</span></span><br><span class="line"><span class="keyword">var</span> result2 = valueDate2.valueOf(); <span class="comment">// valueDate2: 'Fri Aug 09 2019 22:42:33 GMT+0800 (中国标准时间)'</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，<br>当使用第一种顺序时，valueOf会将Date类型数据转为毫秒数，而接下来的toString方法实际上是将这个毫秒数转为了字符串；<br>当使用第二种顺序时，toString方法先将Date类型数据转为了字符串，已经是原始值了，此时再执行valueOf函数依然是返回这个值。<br>但我们调用ToPrimitive本意常常是要得到原始值，而不希望改变这个值，故执行ToPrimitive函数时，若input为Date类型，默认type为String。</p>
+<h3 id="2-ToNumber"><a href="#2-ToNumber" class="headerlink" title="2 ToNumber()"></a>2 ToNumber()</h3><p>此函数的转换规则大体如下：</p>
+<ol>
+<li>数字： 返回原值</li>
+<li>字符串： 尝试解析，包含非数字字符即得‘NaN’，空字符串为0</li>
+<li>布尔值： true为1，false为+0</li>
+<li>undefined: NaN</li>
+<li>null: +0</li>
+<li>object: （1）执行ToPrimitive(input, ‘Number’)得到原始值；（2）所得通过ToNumber接着转换</li>
+</ol>
+<p>回头看篇首的几个例子，二元算术运算符除了‘+’外，都会将符号两边转为number进行运算。<br>故前面三行的运算相当于：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> - <span class="string">'1'</span> <span class="comment">// 相当于 ToNumber(1) - ToNumber('1') = 1 - 1</span></span><br><span class="line"><span class="number">1</span> - <span class="literal">undefined</span> <span class="comment">// 相当于 ToNumber(1) - ToNumber(undefined) = 1 - NaN</span></span><br><span class="line"><span class="number">1</span> - <span class="literal">null</span> <span class="comment">// 相当于 ToNumber(1) - ToNumber(null) = 1 - 0</span></span><br></pre></td></tr></table></figure>
+<p>1 * {} 相当于 ToNumber(1) * ToNumber({})<br>ToNumber(1) = 1<br>ToNumber({})（1）执行ToPrimitive({}, ‘Number’),此函数中先执行toString()得到”[object Object]”，再执行valueOf()得到”[object Object]”。（2）执行ToNumber函数，得到NaN<br><img src="/images/pic1.png" alt="pic"><br>1 * NaN = NaN，所以结果是NaN</p>
+<p>1 / []<br>相当于 ToNumber(1) / ToNumber([])<br>ToNumber(1) = 1<br>ToNumber([])（1）执行ToPrimitive({}, ‘Number’),此函数中先执行toString()得到””，再执行valueOf()得到””。（2）执行ToNumber函数，得到0<br><img src="/images/pic2.png" alt="pic"><br>1 / 0 = Infinity，所以结果是Infinity</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ &#123;&#125; <span class="comment">// NaN</span></span><br><span class="line">+ [] <span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 一元加号同样是将其转为number，思路与上面相同</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-ToString"><a href="#3-ToString" class="headerlink" title="3 ToString()"></a>3 ToString()</h3><p>此函数的转换规则大体如下：</p>
+<ol>
+<li>数字： 返回其对应字符串</li>
+<li>字符串： 返回原值</li>
+<li>布尔值： 返回’true’或’false’</li>
+<li>undefined: 返回’undefined’</li>
+<li>null: 返回’null’</li>
+<li>object: （1）执行ToPrimitive(input, ‘String’)得到原始值；（2）所得通过ToString接着转换</li>
+</ol>
+<h2 id="三-运算符的几个例子"><a href="#三-运算符的几个例子" class="headerlink" title="三 + 运算符的几个例子"></a>三 + 运算符的几个例子</h2><p>回头看篇首的几个例子，二元运算符‘+’外，除了可能是算术运算进行加法外，也可能是进行字符串的连接，那么什么时候是加法运算，什么时候是字符串连接呢？</p>
+<ol>
+<li>两个操作数都先进行ToPrimitive得到原始值</li>
+<li>第一步所得两个都是string，直接字符串连接；</li>
+<li>第一步所得有一个是string，另一个ToString转为字符串，再进行字符串连接；</li>
+<li>第一步所得两个都不是string，都执行ToNumber转为数字，进行加法运算；</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> + &#123;&#125;</span><br><span class="line"><span class="comment">// 首先得到原始值 ToPrimitive(1), ToPrimitive(&#123;&#125;) 分别为 1, "[Object Object]"</span></span><br><span class="line"><span class="comment">// 符合第3点，字符串连接</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> + <span class="literal">null</span></span><br><span class="line"><span class="comment">// 首先得到原始值 ToPrimitive(1), ToPrimitive(null) 分别为 1, null</span></span><br><span class="line"><span class="comment">// 符合第4点，相当于ToNumber(1) + ToNumber(null) = 1 + 0 = 1</span></span><br></pre></td></tr></table></figure>
+<h2 id="四-不严格相等的几个例子"><a href="#四-不严格相等的几个例子" class="headerlink" title="四 == 不严格相等的几个例子"></a>四 == 不严格相等的几个例子</h2><p>同类型直接比较，不同类型时：</p>
+<ol>
+<li>undefined == null且这两个值与其他数值都判断为false</li>
+<li>Number/String/Boolean基本数据类型间都转为Number后进行比较</li>
+<li>Object与Number/String/Boolean，Object执行ToPrimitive得到原始值后，基于前两点进行比较</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'1'</span> == <span class="literal">true</span> <span class="comment">// 相当于判断ToNumber('1') == ToNumber(true)</span></span><br><span class="line"></span><br><span class="line">[] == &#123;&#125; <span class="comment">// 得到原始值分别是''和'[Object Object]'</span></span><br><span class="line"></span><br><span class="line">&#123;&#125; == [] <span class="comment">// Uncaught SyntaxError: Unexpected token ==</span></span><br><span class="line"><span class="comment">// == 前面不能直接写对象，如需比较需要将其赋值给一个变量</span></span><br><span class="line"></span><br><span class="line">[] == <span class="number">0</span> <span class="comment">// true</span></span><br><span class="line"><span class="comment">// []获取原始值为“”，相当于比较 “” == 0，将两边都ToNumber，相当于 0 == 0</span></span><br></pre></td></tr></table></figure>
+<h2 id="五-特别的例子：浏览器对代码块和对象字面量的解析"><a href="#五-特别的例子：浏览器对代码块和对象字面量的解析" class="headerlink" title="五 特别的例子：浏览器对代码块和对象字面量的解析"></a>五 特别的例子：浏览器对代码块和对象字面量的解析</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125; == [] <span class="comment">// Uncaught SyntaxError: Unexpected token ==</span></span><br><span class="line">&#123;&#125; + [] <span class="comment">// 0</span></span><br><span class="line">[] + &#123;&#125; <span class="comment">// "[object Object]"</span></span><br><span class="line">&#123;&#125; + &#123;&#125; <span class="comment">// chrome运行结果:"[object Object][object Object]"; firefox运行结果：NaN</span></span><br></pre></td></tr></table></figure>
+<p>上面几个例子与我们原来设想的结果不一样，这是因为当{}前面没有运算符时，它有可能会被解析为一个代码块，而不是一个对象字面量。</p>
+<p>所以：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125; == []</span><br><span class="line"><span class="comment">// 相当于</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line">== []</span><br></pre></td></tr></table></figure>
+<p>这个时候被认为 == 的使用是语法错误的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125; + []</span><br><span class="line"><span class="comment">// 相当于</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line">+[]</span><br></pre></td></tr></table></figure>
+<p>此时就相当于一个ToNumber([])，因此所得为0。而[] + {}中{}前面有运算符，依然被是为是对象字面量而不是代码块，所以可以进行正常的字符串连接。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125; + &#123;&#125;<span class="comment">// chrome运行结果:"[object Object][object Object]"; firefox运行结果：NaN</span></span><br><span class="line"><span class="comment">// firefox中应是将它这样解析：</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line">+ &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// chrome则是将第一个&#123;&#125;解析为对象字面量</span></span><br></pre></td></tr></table></figure>
+<p>{} + {} 在chrome和firefox中的运行结果不同。firefox应是将前面没有运算符的{}都解析为代码块，而chrome却不一定，具体规律是什么就没有深究了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/08/基本包装类型/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1275,7 +1459,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1325,7 +1509,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

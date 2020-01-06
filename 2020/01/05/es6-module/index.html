@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="写字的地方">
 <meta property="og:description" content="module 性质es6 中 module 是编译时加载，故在静态分析阶段不能做到的事情它也不能做，比如不能条件加载。（与 CommonJS 不同，CommonJS 是运行时加载）当运行代码时，模块都加载完毕，故 import 和 export 语句无论是在代码的何处，都相当于提升到文件顶部执行。 导入导出默认值1234567891011121314// module.jslet time = n">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-01-05T08:47:32.461Z">
+<meta property="og:updated_time" content="2020-01-06T11:33:37.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="es6 module">
 <meta name="twitter:description" content="module 性质es6 中 module 是编译时加载，故在静态分析阶段不能做到的事情它也不能做，比如不能条件加载。（与 CommonJS 不同，CommonJS 是运行时加载）当运行代码时，模块都加载完毕，故 import 和 export 语句无论是在代码的何处，都相当于提升到文件顶部执行。 导入导出默认值1234567891011121314// module.jslet time = n">
@@ -330,8 +330,7 @@
 <li>利用 setTimeout 使被引用的模块内容 time 发生改变，可以看到引用的值也会相应改变。</li>
 <li>对 TimeMgr 这个引用的值直接重新进行赋值会报错，因为其有属性 read-only。但对 TimeMgr 的其中一个属性 data 重新赋值不会报错。（不过不建议这么直接赋值，会让错误变得难以定位。可以在被引用文件中写类似函数 updateDate，通过调用函数更新属性值）。<br>（与 CommonJS 不同，CommonJS 是值的拷贝）</li>
 </ol>
-<p>参考链接：</p>
-<p><a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">阮一峰 ECMAScript 6 入门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">阮一峰 ECMAScript 6 入门</a></p>
 
       
     </div>
@@ -498,7 +497,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#module-性质"><span class="nav-number">1.</span> <span class="nav-text">module 性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入导出默认值"><span class="nav-number">2.</span> <span class="nav-text">导入导出默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#import-和-export-的复合写法"><span class="nav-number">3.</span> <span class="nav-text">import 和 export 的复合写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态引入"><span class="nav-number">4.</span> <span class="nav-text">动态引入</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#module-性质"><span class="nav-number">1.</span> <span class="nav-text">module 性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入导出默认值"><span class="nav-number">2.</span> <span class="nav-text">导入导出默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#import-和-export-的复合写法"><span class="nav-number">3.</span> <span class="nav-text">import 和 export 的复合写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态引入"><span class="nav-number">4.</span> <span class="nav-text">动态引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

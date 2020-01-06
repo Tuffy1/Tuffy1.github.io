@@ -477,8 +477,7 @@
 <li>利用 setTimeout 使被引用的模块内容 time 发生改变，可以看到引用的值也会相应改变。</li>
 <li>对 TimeMgr 这个引用的值直接重新进行赋值会报错，因为其有属性 read-only。但对 TimeMgr 的其中一个属性 data 重新赋值不会报错。（不过不建议这么直接赋值，会让错误变得难以定位。可以在被引用文件中写类似函数 updateDate，通过调用函数更新属性值）。<br>（与 CommonJS 不同，CommonJS 是值的拷贝）</li>
 </ol>
-<p>参考链接：</p>
-<p><a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">阮一峰 ECMAScript 6 入门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">阮一峰 ECMAScript 6 入门</a></p>
 
           
         

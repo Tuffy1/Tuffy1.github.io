@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Generator 生成器Generator 函数包含一组状态，调用它时返回一个 Iterator 迭代器对象，通过 Iterator 执行并一步一步读取 Generator 中的状态。 12345678910function* gen() &amp;#123;  yield 1;  yield 2;  yield 3;&amp;#125;let ite = gen();ite.next(); // 开始执行 g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es6 Generator">
+<meta property="og:url" content="http://yoursite.com/2020/01/12/es6-generator/index.html">
+<meta property="og:site_name" content="写字的地方">
+<meta property="og:description" content="Generator 生成器Generator 函数包含一组状态，调用它时返回一个 Iterator 迭代器对象，通过 Iterator 执行并一步一步读取 Generator 中的状态。 12345678910function* gen() &amp;#123;  yield 1;  yield 2;  yield 3;&amp;#125;let ite = gen();ite.next(); // 开始执行 g">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-12T07:37:04.484Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="es6 Generator">
+<meta name="twitter:description" content="Generator 生成器Generator 函数包含一组状态，调用它时返回一个 Iterator 迭代器对象，通过 Iterator 执行并一步一步读取 Generator 中的状态。 12345678910function* gen() &amp;#123;  yield 1;  yield 2;  yield 3;&amp;#125;let ite = gen();ite.next(); // 开始执行 g">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/12/es6-generator/">
+
+
+
+
+
+  <title>es6 Generator | 写字的地方</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写字的地方</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/12/es6-generator/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">es6 Generator</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-12T15:34:30+08:00">
+                2020-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/12/es6-generator/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2020/01/12/es6-generator/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Generator-生成器"><a href="#Generator-生成器" class="headerlink" title="Generator 生成器"></a>Generator 生成器</h2><p>Generator 函数包含一组状态，调用它时返回一个 Iterator 迭代器对象，通过 Iterator 执行并一步一步读取 Generator 中的状态。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> ite = gen();</span><br><span class="line">ite.next(); <span class="comment">// 开始执行 gen 函数体内的语句，返回第一个状态 &#123; value: 1, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// 返回第二个状态 &#123; value: 2, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// 返回第三个状态 &#123; value: 3, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// 返回第四个状态 &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+<p><code>ite = gen()</code> 语句时并没有开始执行 gen 函数中的内容，而是直接返回了一个 Iterator。在第一个 <code>ite.next()</code> 时，才开始真正执行，并在遇到第一次 yield 时停止，以 <code>{ value: 1, done: false }</code> 的形式返回第一个 yield 表达式产生的值。value 是对应的值，done 表示是否结束，当函数执行完毕，或者遇到 return 时，done 为 true。</p>
+<h2 id="Symbol-iterator-与-for…of"><a href="#Symbol-iterator-与-for…of" class="headerlink" title="Symbol.iterator 与 for…of"></a>Symbol.iterator 与 for…of</h2><p>一些数据格式自带 Symbol.iterator 方法，比如 Array，Map，Set, NodeList 等，执行该方法可以得到一个 Iterator 对象，以数组为例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">11</span>, <span class="number">2</span>, <span class="number">33</span>, <span class="number">4</span>];</span><br><span class="line"><span class="keyword">let</span> ite = arr[<span class="built_in">Symbol</span>.iterator]();</span><br><span class="line">ite.next(); <span class="comment">// &#123; value: 11, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// &#123; value: 33, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// &#123; value: 4, done: false &#125;</span></span><br><span class="line">ite.next(); <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，通过调用数组的 Symbol.iterator 方法，得到的 ite，<code>ite.next()</code> 方法迭代读取的是数组的每个元素，这也是 for…of 的实现原理，通过对象的 Symbol.iterator 方法来获取每一步值。<br>假设我们重新实现以下 arr 的 Symbol.iterator 方法，再执行以下 for…of</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">11</span>, <span class="number">2</span>, <span class="number">33</span>, <span class="number">4</span>];</span><br><span class="line">arr[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span>*(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"arr yield 1"</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"arr yield 2"</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"arr yield 3"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> arr) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr yield 1</span><br><span class="line">arr yield 2</span><br><span class="line">arr yield 3</span><br></pre></td></tr></table></figure>
+<p>与 for…of 同样的，解构赋值，扩展与 Array.from 方法也是调用的 Iterator 接口：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"a"</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"b"</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"c"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> ite = gen();</span><br><span class="line">[...ite]; <span class="comment">// ['a', 'b', 'c']</span></span><br><span class="line">ite = gen(); <span class="comment">// 注意这里不能直接使用ite，因为此时ite已经走完了处于close。要重新执行</span></span><br><span class="line"><span class="keyword">let</span> [x, y, z] = ite; <span class="comment">// x: 'a', y: 'b', z: 'c'</span></span><br></pre></td></tr></table></figure>
+<h2 id="next-方法参数"><a href="#next-方法参数" class="headerlink" title="next 方法参数"></a>next 方法参数</h2><p>当调用 next 方法时，可以往其中传参数，这个参数作为上一次状态的返回值。举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> res1, res2, res3;</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  x = <span class="keyword">yield</span> <span class="string">"a"</span>;</span><br><span class="line">  y = <span class="keyword">yield</span> <span class="string">`<span class="subst">$&#123;x&#125;</span>b`</span>;</span><br><span class="line">  <span class="keyword">yield</span> z;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> ite = gen();</span><br><span class="line">res1 = ite.next(); <span class="comment">// 第一步不传参，第一步传参的话无意义，因为这已经是第一个状态，不存在它的上一个状态</span></span><br><span class="line">res2 = ite.next(res1.value); <span class="comment">// 此时将 res1.value 为'a'，并将它传给了 x，得到 res2 为 'ab'</span></span><br><span class="line">res3 = ite.next(res2.value); <span class="comment">// 此时将 res2.value 为'ab'，并将它传给了 y，得到 res3 为'abc'</span></span><br></pre></td></tr></table></figure>
+<h2 id="Generator-与异步"><a href="#Generator-与异步" class="headerlink" title="Generator 与异步"></a>Generator 与异步</h2><h3 id="自动执行-Generator：then-方法"><a href="#自动执行-Generator：then-方法" class="headerlink" title="自动执行 Generator：then 方法"></a>自动执行 Generator：then 方法</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fetch = <span class="built_in">require</span>(<span class="string">"node-fetch"</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> data = <span class="keyword">yield</span> fetch(<span class="string">"https://api.github.com/users/github"</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(data);</span><br><span class="line">  <span class="keyword">let</span> json = <span class="keyword">yield</span> data.json();</span><br><span class="line">  <span class="built_in">console</span>.log(json);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ite = gen();</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> res = ite.next(data);</span><br><span class="line">    <span class="keyword">if</span> (res.done) <span class="keyword">return</span> res.value;</span><br><span class="line">    res.value.then(<span class="function"><span class="params">d</span> =&gt;</span> &#123;</span><br><span class="line">      next(d);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  next();</span><br><span class="line">&#125;</span><br><span class="line">run(gen);</span><br></pre></td></tr></table></figure>
+<p>但这要求 res.value 需要是 Promise 对象，所以可以尝试对 res.value 进行 promisify，以帮助我们在 then 中调用 next 取回 gen 的执行权。此外我们还可以让 <code>run(gen)</code> 的返回值为 Promise 对象，这样可以进一步进行我们想要的异步操作，所以我们可以 new Promise 在其外面包装一层。同时添加一些错误处理：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fetch = <span class="built_in">require</span>(<span class="string">"node-fetch"</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> data = <span class="keyword">yield</span> fetch(<span class="string">"https://api.github.com/users/github"</span>);</span><br><span class="line">  <span class="keyword">let</span> json = <span class="keyword">yield</span> data.json();</span><br><span class="line">  <span class="built_in">console</span>.log(json);</span><br><span class="line">  <span class="keyword">let</span> email = <span class="keyword">yield</span> json.email;</span><br><span class="line">  <span class="built_in">console</span>.log(email);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      next(v);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="keyword">return</span> reject(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      gen.throw(err);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="keyword">return</span> reject(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen !== <span class="string">"function"</span>) <span class="keyword">return</span> resolve(gen);</span><br><span class="line">    <span class="keyword">let</span> ite = gen();</span><br><span class="line">    <span class="keyword">if</span> (!ite || <span class="keyword">typeof</span> ite.next !== <span class="string">"function"</span>) <span class="keyword">return</span> resolve(gen);</span><br><span class="line">    next();</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">let</span> res = ite.next(data);</span><br><span class="line">      <span class="keyword">if</span> (res.done) <span class="keyword">return</span> resolve(res.value);</span><br><span class="line">      <span class="keyword">let</span> value = toPromise(res.value);</span><br><span class="line">      <span class="keyword">if</span> (value &amp;&amp; isPromise(value)) <span class="keyword">return</span> value.then(onFulfilled, onRejected);</span><br><span class="line">      <span class="keyword">return</span> onRejected(</span><br><span class="line">        <span class="keyword">new</span> <span class="built_in">TypeError</span>(</span><br><span class="line">          <span class="string">"You may only yield a function, promise, generator, array, or object, "</span> +</span><br><span class="line">            <span class="string">'but the following object was passed: "'</span> +</span><br><span class="line">            <span class="built_in">String</span>(ret.value) +</span><br><span class="line">            <span class="string">'"'</span></span><br><span class="line">        )</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">run(gen).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>事实上，上面的核心代码来源一个模块 <a href="https://github.com/tj/co" target="_blank" rel="noopener">co</a>，一个帮助 Generator 函数自动执行的库。通过递归地在 <code>then</code> 中执行 <code>ite.next</code> 来达到当前异步操作执行完毕后就取回执行权的目的。</p>
+<h3 id="自动执行-Generator：thunk"><a href="#自动执行-Generator：thunk" class="headerlink" title="自动执行 Generator：thunk"></a>自动执行 Generator：thunk</h3><p>关于 thunk 是什么，文章 <a href="http://www.ruanyifeng.com/blog/2015/05/thunk.html" target="_blank" rel="noopener">阮一峰 Thunk 函数的含义和用法</a> 对此有清晰的解释。总的来说，讲一个函数转为 thunk 函数有以下的效果：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</span><br><span class="line"><span class="keyword">let</span> thunkify = <span class="built_in">require</span>(<span class="string">"thunkify"</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cb</span>(<span class="params">err, res</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(err);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> readFile = fs.readFile;</span><br><span class="line">readFile(<span class="string">"./package.json"</span>, cb);</span><br><span class="line"><span class="keyword">let</span> thunkReadFile = thunkify(readFile)(<span class="string">"./package.json"</span>); <span class="comment">// thunkify</span></span><br><span class="line">thunkReadFile(cb);</span><br></pre></td></tr></table></figure>
+<p>对比 <code>readFile(&quot;./package.json&quot;, cb)</code> 和 <code>thunkReadFile(&quot;./package.json&quot;)(cb)</code>，第一个函数调用是多参数的，而第二个可以<strong>将回调函数作为一个单独的参数</strong>。Thunk 转换的主要思路：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> thunkify = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> args = [...arguments];</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">      args.push(callback);</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, args);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>利用这一点，我们将 <code>ite.next</code> 这一步放在回调函数中，作为参数，使执行权回到 gen 函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</span><br><span class="line"><span class="keyword">let</span> thunkify = <span class="built_in">require</span>(<span class="string">"thunkify"</span>);</span><br><span class="line"><span class="keyword">let</span> readFile = fs.readFile;</span><br><span class="line"><span class="keyword">let</span> thunkReadFile = thunkify(readFile);</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> pk = <span class="keyword">yield</span> thunkReadFile(<span class="string">"./package.json"</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(pk);</span><br><span class="line">  <span class="keyword">let</span> pkl = <span class="keyword">yield</span> thunkReadFile(<span class="string">"./package-lock.json"</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(pkl);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> ite = gen();</span><br><span class="line"><span class="keyword">let</span> res = ite.next();</span><br><span class="line">res.value(<span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// thunkReadFile("./package.json") 执行完毕后，将下一步操作作为回调</span></span><br><span class="line">  res = ite.next(data);</span><br><span class="line">  res.value(<span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    res = ite.next(data);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>通过将异步操作 thunkify，执行之后将下一步操作放在其 value（实际为一个 function）的参数执行。可以通过递归来使上面的调用更加普遍适用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</span><br><span class="line"><span class="keyword">let</span> thunkify = <span class="built_in">require</span>(<span class="string">"thunkify"</span>);</span><br><span class="line"><span class="keyword">let</span> readFile = fs.readFile;</span><br><span class="line"><span class="keyword">let</span> thunkReadFile = thunkify(readFile);</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> pk = <span class="keyword">yield</span> thunkReadFile(<span class="string">"./package.json"</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(pk);</span><br><span class="line">  <span class="keyword">let</span> pkl = <span class="keyword">yield</span> thunkReadFile(<span class="string">"./package-lock.json"</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(pkl);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> res = ite.next(data);</span><br><span class="line">  <span class="keyword">if</span> (res.done) <span class="keyword">return</span>; <span class="comment">// 判断结束</span></span><br><span class="line">  res.value(<span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    next(data); <span class="comment">// 递归调用</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> ite = gen();</span><br><span class="line">next();</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://es6.ruanyifeng.com/#docs/generator" target="_blank" rel="noopener">阮一峰 ECMAScript 6 入门</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/06/AMD-CMD-与-ES6Module/" rel="next" title="AMD, CMD, CommonJS 与 ES6Module">
+                <i class="fa fa-chevron-left"></i> AMD, CMD, CommonJS 与 ES6Module
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">J.Y.</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator-生成器"><span class="nav-number">1.</span> <span class="nav-text">Generator 生成器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol-iterator-与-for…of"><span class="nav-number">2.</span> <span class="nav-text">Symbol.iterator 与 for…of</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#next-方法参数"><span class="nav-number">3.</span> <span class="nav-text">next 方法参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator-与异步"><span class="nav-number">4.</span> <span class="nav-text">Generator 与异步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动执行-Generator：then-方法"><span class="nav-number">4.1.</span> <span class="nav-text">自动执行 Generator：then 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动执行-Generator：thunk"><span class="nav-number">4.2.</span> <span class="nav-text">自动执行 Generator：thunk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">J.Y.</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'Tuffy1',
+            repo: 'git-comments',
+            
+            lang: "en" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '1390553a65f01ffcdcf52ac6625cdc4b7a0dd839',
+            
+                client_id: '3c4479028843189e7475'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

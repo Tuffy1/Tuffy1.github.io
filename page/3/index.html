@@ -229,6 +229,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/15/git一些笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/15/git一些笔记/" itemprop="url">git 一些笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T00:01:32+08:00">
+                2019-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Git-的配置"><a href="#Git-的配置" class="headerlink" title="Git 的配置"></a>Git 的配置</h1><p>Git 的配置分三级：系统级（system），全局配置（global），版本库级（local）</p>
+<ul>
+<li><p>系统级（system）：包括所有用户及其仓库的值。对应配置在文件 <em>/etc/gitconfig</em> 中</p>
+</li>
+<li><p>全局配置（global）：针对的是用户的配置。对应配置在文件 <em>~/.gitconfig</em> 中。命令行配置：git config –glocal [-l][&lt; name &gt; &lt; value &gt;][&lt; key &gt;]</p>
+</li>
+<li><p>版本库级（local）：当前仓库的 git 目录。对应配置在文件 <em>.git/config</em> 中</p>
+</li>
+</ul>
+<p>配置文件的优先级：版本库级 &gt; 全局配置 &gt; 系统级</p>
+<h1 id="部分常用-Git-命令"><a href="#部分常用-Git-命令" class="headerlink" title="部分常用 Git 命令"></a>部分常用 Git 命令</h1><ul>
+<li><p>git diff：查看已跟踪文件的具体更改。默认是未暂存的文件的更改，加参数[–staged | –cached]可以查看已暂存文件的更改。 图形化界面查看可以通过命令 <em>git difftool</em> 查看，命令 <em>git difftool –tool-help</em> 可以查看系统中支持的 diff 工具。</p>
+</li>
+<li><p>git remote show [remote-name]：查看远程仓库URL地址以及每一个分支的跟踪信息。如果可以看到远程仓库中哪些分支已跟踪，哪些是新分支，哪些是本地有而远程已经删除了的分支，pull到本地的分支对应关系，push到远程的分支的对应关系。</p>
+</li>
+<li><p>git push origin [tagname]: 共享标签，可以将标签推送到远程。如果要一次性推送所有标签的话，可以使用命令git push origin -tags。</p>
+</li>
+<li><p>git branch –merge: 可以查看所有已合并到当前分支的分支。</p>
+</li>
+<li><p>git branch –no-merge: 可以查看所有未合并到当前分支的分支。</p>
+</li>
+</ul>
+<h1 id="远程分支"><a href="#远程分支" class="headerlink" title="远程分支"></a>远程分支</h1><ul>
+<li><p>拉取：git fetch origin命令，会去查询“origin”服务器取得所有本地尚未包含的数据，然后更新到本地数据库，最后把本地的origin/master指针移动到最新位置上。拉取远程分支，如果其中有本地没有创建过的分支，并不会自动去创建这些分支，只是本地会有对应的origin/xxxx指针。</p>
+</li>
+<li><p>跟踪分支：基于远程分支创建的本地分支会自动成为跟踪分支（tracking branch），或者有时候也叫做上游分支（upstream branch）。<br>即：跟踪分支是与远程分支直接关联的本地分支，所以如果在一个跟踪分支上git push的话，Git可以知道该推送到远程仓库的哪个分支，git pull的时候Git知道该从哪个服务器拉取分支并合并到本地分支。<br>如果要给本地分支设置跟踪分支，或者更改本地分支对应的远程分支，可以使用命令 git branch -u … 或 git branch –set-upstream-to …</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ git branch -u origin/serverfix</span><br><span class="line">Branch sercerfix <span class="built_in">set</span> up to track remote branch serverfix from origin</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看目前本地分支的跟踪分支状态： git branch -vv</li>
+</ul>
+<h1 id="Git工具"><a href="#Git工具" class="headerlink" title="Git工具"></a>Git工具</h1><ul>
+<li>git log</li>
+</ul>
+<ol>
+<li><p>git log master..experiment: 可以查看所有“可以在experiment分支中获得，但不能在master分支获得的提交”。<br>(上面命令等效于：git log master –not experiment，也等效于：git log master ^experiment)<br>git log experiment..master: 可以查看所有“可以在master分支中获得，但不能在experiment分支获得的提交”。</p>
+</li>
+<li><p>涉及多条分支：git log refA refB –not refC (git log refA refB ^refC) 可以查看所有“可以在refA和refB上获得，但不能从refC上获得的提交”。</p>
+</li>
+</ol>
+<ul>
+<li>git add -p xxx<br>p是patch的缩写。可以通过这个命令对文件进行部分暂存，比如一个文件中有些修改想暂存，有些不像暂存，可以由此进行交互选择。</li>
+</ul>
+<h1 id="Git调试"><a href="#Git调试" class="headerlink" title="Git调试"></a>Git调试</h1><ul>
+<li><p>git blame -L m,n filename: 可以看到文件 filename 从 m 行到 n 行的修改信息。</p>
+</li>
+<li><p>git bisect: 二分查找。原来没出现过的bug，现在出现了，二分查找帮助找到问题出现的提交</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git bisect start // 启动排查过程</span><br><span class="line">git bisect bad // 告诉系统当前提交有问题</span><br><span class="line">git bisect good [good_commit] // 告诉bisect最后一次正常状态是什么时候</span><br><span class="line">// Git会在你认为最后一次正确的提交和当前错误提及哦啊之间检出中间那一次，这时可以进行测试，如果这个中间提交是有问题的，那么：</span><br><span class="line">git bisect bad // 告知Git</span><br><span class="line">// 如果这个中间提交是没有问题的，那么</span><br><span class="line">git bisect good // 告知Git</span><br><span class="line">// 排查结束后得到最开始出现问题的提交</span><br><span class="line">git bisect reset // 将HEAD重置到排查之前的位置</span><br></pre></td></tr></table></figure>
+<p>什么是“fast-forward”？<br>当合并分支时所说的“fast-forwaord”，是指合并的两个分支，其中一个分支是另一个分支的直接上游（即父提交），此时GIT会尝试直接更改该提交的指针指向的提交，将指针直接向前移动。<br>如果要合并的两条分支是从某个共同祖先开叉出来的，即不是直接上游。那么Git会去判断找到它们之间最优的共同祖先，尝试基于三方（共同祖先，两个待合并分支）结果，创建新的快照。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/14/hello-world/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -394,7 +565,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

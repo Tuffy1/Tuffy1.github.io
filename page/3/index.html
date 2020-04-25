@@ -229,6 +229,147 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/08/demothodizing/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/08/demothodizing/" itemprop="url">demothodizing</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-08T22:14:19+08:00">
+                2019-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>toStr = Function.call.bind(Object.prototype.toString)</p>
+<h2 id="一-含义"><a href="#一-含义" class="headerlink" title="一 含义"></a>一 含义</h2><h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><ol>
+<li><p>Object.prototype.toStrig: 表示 Object 对象的 toString 方法；</p>
+</li>
+<li><p>bind：是 Function.prototype 的一个方法，该方法会有创建一个新函数，并将该函数的 this 指向其参数，并返回这个函数；</p>
+</li>
+<li><p>call：是 Function.prototype 的一个方法，与 bind 不同，call 函数会直接执行，并将函数内 this 指向参数；</p>
+</li>
+</ol>
+<h3 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果"></a>执行效果</h3><p>bind 创建一个新函数 Function.call 并将其 this 指向 Object.prototype.toString，故上面的语句相当于</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toStr = <span class="built_in">Object</span>.prototype.toString.call(params);</span><br></pre></td></tr></table></figure>
+<h2 id="二-作用"><a href="#二-作用" class="headerlink" title="二 作用"></a>二 作用</h2><p>该语句的使用常是：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 得到一个将参数转为 toString 的方法</span></span><br><span class="line"><span class="keyword">const</span> toStr = <span class="built_in">Function</span>.call.bind(<span class="built_in">Object</span>.prototype.toString);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">toStr(something);</span><br></pre></td></tr></table></figure>
+<p>为什么不直接使用toString方法呢？</p>
+<p>toString 是在 Object 原型中的方法，一般只有 Object 才可以调用，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">2</span>&#125;;</span><br><span class="line">obj.toString(); <span class="comment">// 这是可以的</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">arr.toString(); <span class="comment">// 这是不行的</span></span><br></pre></td></tr></table></figure>
+<p>但是经过 Function.call.bind(Object.prototype.toString) 所得是一个 Function，那么各种类型的数据都可以去做同样的执行。</p>
+<p>同样的，forEach 方法也是一样的例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 得到一个将参数转为 toString 的方法</span></span><br><span class="line"><span class="keyword">const</span> each = <span class="built_in">Function</span>.prototype.call.bind([].forEach);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">each([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="function"><span class="keyword">function</span> (<span class="params">a</span>) </span>&#123; <span class="built_in">console</span>.log(a); &#125;); <span class="comment">// 参数为 arr</span></span><br><span class="line"></span><br><span class="line">each(<span class="string">'12345'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123; <span class="built_in">console</span>.log(s); &#125;); <span class="comment">// 参数为 str。同样可以执行</span></span><br></pre></td></tr></table></figure>
+<p>这就使得一个 Array.prototype 上的方法，可以被创建一个新的，被 str 调用。</p>
+<p>为什么当用 call 方法调用 forEach 传 String 类型的参数可以正常执行？</p>
+<p>forEach 方法本身执行对 String 类型是 work 的，只是在 Array.prototype 中，本来只提供给 Array 类型调用，call 方法使得 String 类型可以调用 forEach 方法。如果传参是 Number 类型，那么将不能起到同样的作用。这是该语句的使用场景。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/03/js异步操作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -705,7 +846,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -229,6 +229,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/debounce-and-throttle/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/25/debounce-and-throttle/" itemprop="url">debounce and throttle</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-25T22:51:15+08:00">
+                2020-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="防抖（debounce）"><a href="#防抖（debounce）" class="headerlink" title="防抖（debounce）"></a>防抖（debounce）</h2><h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><ol>
+<li><p>在用户的注册页，对于用户填写的用户名，我们需要检测该用户名是否已经被注册过，所以会监听用户的按键事件，当用户输入内容改变时，发请求验证该用户名是否被注册过。但这时，如果用户不断进行输入，其实并不需要我们每一次输入都去请求，而可以在用户暂停某个时间长度的情况下（比如 100ms）再发请求。一些“搜索”事件也是一样的，许多情况下我们不需要每一次按键事件都进行搜索操作，这样会让操作进行得非常频繁，而事实上我们只需要用户按键暂停某个时间长度的情况下才进行相应操作。</p>
+</li>
+<li><p>假设我们对 resize 事件进行了监听，并有一些处理程序（比如在 resize 事件中进行 dom 操作），其高频率更改可能导致浏览器挂起甚至崩溃。此时我们同样可以利用防抖，让 resize 事件结束一段事件后再进行处理操作。</p>
+</li>
+</ol>
+<h3 id="原理与实现"><a href="#原理与实现" class="headerlink" title="原理与实现"></a>原理与实现</h3><p>防抖的基本思想是：某些代码不可以在没有间断的情况下连续重复执行。</p>
+<p>首先看一个没有防抖的例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    solve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>代码中有一个监听 <code>#input</code> 按键的事件，每一次按键都会触发执行函数 <code>solve</code>。</p>
+<p>接着我们写一个防抖的函数：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"debounce-input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function debounce(fun, delay) &#123;</span></span><br><span class="line"><span class="undefined">    return function(...args) &#123;</span></span><br><span class="line"><span class="undefined">      clearTimeout(fun.tId);</span></span><br><span class="line"><span class="undefined">      let _this = this;</span></span><br><span class="line"><span class="undefined">      let _args = args;</span></span><br><span class="line"><span class="undefined">      fun.tId = setTimeout(function() &#123;</span></span><br><span class="line"><span class="undefined">        fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">      &#125;, delay);</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  const debounceSolve = debounce(solve, 1000);</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("debounce-input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    debounceSolve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上述代码执行的结果是：当不间断地按键时，控制台不会打印，只有按键后停止 1000 ms 时，控制台才会打印。</p>
+<p>代码中同样有一个监听 <code>#ebounce-input</code> 按键的事件，不同的是，我们对函数 <code>solve</code> 进行 <code>debounce</code>，得到函数 <code>debounceSolve</code>，每一次按键执行函数 <code>debounceSolve</code>。</p>
+<p>对函数 <code>solve</code> 进行 <code>debounce</code> 其实是返回了一个函数，当调用这个函数时（input 监听事件中调用），第一次调用会创建一个定时器，在指定时间间隔之后再执行代码。第二次调用函数时，它会清除前一次的定时器并设置另一个。如果前一个定时器已经执行过了，这个操作就没有任何意义。然而，如果前一个定时器尚未执行，其实就是将其替换成一个新的定时器。</p>
+<p>意思就是说：处理程序并不会在调用的时候立刻执行，而是设置定时器在指定时间间隔后（delay）执行，如果在这段时间内，又调用了这个函数，那么清掉之前的定时器重新定时。只有在执行函数的请求停止了一段时间（delay），处理程序（solve）才会执行。</p>
+<h2 id="节流（throttle）"><a href="#节流（throttle）" class="headerlink" title="节流（throttle）"></a>节流（throttle）</h2><h3 id="场景-1"><a href="#场景-1" class="headerlink" title="场景"></a>场景</h3><ol>
+<li><p>当页面不断进行滚动时，监听滚动事件并执行处理程序（比如加载更多内容），这时不需要每一次滚动都执行，而只需要在不断的滚动中每隔一段时间执行一次。</p>
+</li>
+<li><p>鼠标在页面上进行高频不断的点击操作时（比如游戏中的鼠标点击攻击），只需要对用户的操作进行一定时间间隔的处理即可。</p>
+</li>
+</ol>
+<h3 id="原理与实现-1"><a href="#原理与实现-1" class="headerlink" title="原理与实现"></a>原理与实现</h3><p>节流的主要应用场景和处理方法是：事件的触发不论如何高频，某些代码都只会在触发中每隔一段时间执行一次。</p>
+<p>还是看一个这个例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    solve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>代码中有一个监听 <code>#input</code> 按键的事件，每一次按键都会触发执行函数 <code>solve</code>。</p>
+<p>接着我们写一个节流的函数：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"throttle-input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function throttle(fun, delay) &#123;</span></span><br><span class="line"><span class="undefined">    let prevTime;</span></span><br><span class="line"><span class="undefined">    return function(...args) &#123;</span></span><br><span class="line"><span class="undefined">      let _this = this;</span></span><br><span class="line"><span class="undefined">      let _args = args;</span></span><br><span class="line"><span class="undefined">      let currentTime = +new Date();</span></span><br><span class="line"><span class="undefined">      let remainingTime = delay - (currentTime - prevTime);</span></span><br><span class="line"><span class="undefined">      if (remainingTime &gt; 0) &#123;</span></span><br><span class="line"><span class="undefined">        clearTimeout(fun.tId);</span></span><br><span class="line"><span class="undefined">        fun.tId = setTimeout(function() &#123;</span></span><br><span class="line"><span class="undefined">          fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">        &#125;, remainingTime);</span></span><br><span class="line"><span class="undefined">      &#125; else &#123;</span></span><br><span class="line"><span class="undefined">        fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">        prevTime = +new Date();</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  const throttleSolve = throttle(solve, 1000);</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("throttle-input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    throttleSolve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上述代码执行的结果是：当不间断地按键时，控制台只会每隔 1000 ms 打印一次。</p>
+<p>代码中同样有一个监听 <code>#throttle-input</code> 按键的事件，不同的是，我们对函数 <code>solve</code> 进行 <code>throttle</code>，得到函数 <code>throttleSolve</code>，每一次按键执行函数 <code>throttleSolve</code>。</p>
+<p>对函数 <code>solve</code> 进行 <code>throttle</code> 其实是返回了一个函数，当调用这个函数时（input 监听事件中调用），第一次会执行执行处理程序，并把 prevTime（标记上一次的执行时间）设置为当前的时间，第二次调用函数时，如果与上一次调用的间隔时间超过我们设置的 delay，那么处理程序依然会直接执行，但如果调用的间隔时间短于 delay，那么需要清除前一次的定时器（如果有的话）并设置另一个，在 remainingTime（即满足了 delay 间隔还需要的时间）后执行</p>
+<p>意思就是说：两次处理程序之间<strong>至少</strong>间隔指定时间段后才执行一次，期间如何高频操作都不会执行。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/flex-布局/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1495,182 +1646,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/17/typescript学习/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="J.Y.">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="写字的地方">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/17/typescript学习/" itemprop="url">typescript 学习（一）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-17T22:47:20+08:00">
-                2019-10-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一、基本数据类型及数组"><a href="#一、基本数据类型及数组" class="headerlink" title="一、基本数据类型及数组"></a>一、基本数据类型及数组</h2><p>基本数据类型有：number，string，boolean，null，undefined，symbol。<br>数组：两种表示方式如 number[]和 Array &lt;number>，number 可以换成其他类型，表示数组中的元素类型。<br>不同类型的变量不能互相赋值。特别的，null 和 undefined 是所有类型的子类型，可以被赋值到其他类型的变量。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本数据类型</span></span><br><span class="line"><span class="keyword">let</span> username: string = <span class="string">"tuffy"</span>;</span><br><span class="line"><span class="keyword">let</span> age: number = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">const</span> u: <span class="literal">undefined</span> = <span class="literal">undefined</span>;</span><br><span class="line"><span class="keyword">const</span> n: <span class="literal">null</span> = <span class="literal">null</span>;</span><br><span class="line">username = u; <span class="comment">// 编译通过：将undefined类型赋值到string类型变量</span></span><br><span class="line">username = n; <span class="comment">// 编译通过：将null类型赋值到string类型变量</span></span><br><span class="line">username = age; <span class="comment">// 编译报错：将number类型赋值到string类型变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组</span></span><br><span class="line"><span class="keyword">let</span> arr: number[];</span><br><span class="line">arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">arr = <span class="literal">null</span>;</span><br><span class="line">arr = [<span class="number">1</span>, <span class="literal">null</span>];</span><br><span class="line"><span class="keyword">let</span> arr1: string[] = <span class="literal">undefined</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二、任意类型"><a href="#二、任意类型" class="headerlink" title="二、任意类型"></a>二、任意类型</h2><p>any 表示允许赋值为任意类型。<br>当声明一个变量并没有指明数据类型时，将会推论为 any。但如果在声明的同时被进行赋值，那么该变量会被推断为该数值的类型。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> notType = <span class="string">"123"</span>; <span class="comment">// 推断为 string 类型</span></span><br><span class="line">notType = <span class="number">1</span>; <span class="comment">// 编译报错:再赋值为 number 类型数值时报错</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> anyType; <span class="comment">// 推断为 any 类型</span></span><br><span class="line">anyType = <span class="string">"123"</span>; <span class="comment">// 编译通过</span></span><br><span class="line">anyType = <span class="number">123</span>; <span class="comment">// 编译通过</span></span><br></pre></td></tr></table></figure>
-<h2 id="三、联合类型"><a href="#三、联合类型" class="headerlink" title="三、联合类型"></a>三、联合类型</h2><p>假如知道变量要么是 string 类型要么是 number 类型，不会是别的类型，但不能确定是 string 还是 number 时，可以使用联合类型。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> unionTypes: string | number;</span><br><span class="line"><span class="keyword">let</span> a: number = unionTypes.length; <span class="comment">// 编译报错</span></span><br><span class="line"><span class="keyword">let</span> b: string = unionTypes.toString(); <span class="comment">// 编译通过</span></span><br><span class="line"></span><br><span class="line">unionTypes = <span class="string">"123"</span>;</span><br><span class="line">a = unionTypes.length; <span class="comment">// 编译通过</span></span><br><span class="line">unionTypes = <span class="number">123</span>;</span><br><span class="line">a = unionTypes.length; <span class="comment">// 编译报错</span></span><br></pre></td></tr></table></figure>
-<h2 id="四、函数"><a href="#四、函数" class="headerlink" title="四、函数"></a>四、函数</h2><p>函数的两种定义方式：函数声明和函数表达式。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add1</span>(<span class="params">a: number, b?: number, c?: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> add2: <span class="function">(<span class="params">a: number, b?: number, c?: number</span>) =&gt;</span> number = <span class="function"><span class="keyword">function</span> (<span class="params">a: number, b?: number, c?: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 此处与 add2 不同，其实并没有直接对 add3 进行类型定义，是通过类型推断所得</span></span><br><span class="line"><span class="keyword">let</span> add3 = <span class="function"><span class="keyword">function</span> (<span class="params">a: number, b?: number, c?: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>函数可以定义<strong>可选参数</strong>，但可选参数必须放在必填参数后面，即后面不能再有必填参数。<br>函数可以定义<strong>剩余参数</strong>，但剩余参数必须放在参数最后，即必须是最后一个参数。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a: number, b?: number, ...items: number[]</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="五、类"><a href="#五、类" class="headerlink" title="五、类"></a>五、类</h2><p>抽象类（类前面加 abstract ），不能被实例化，一般而言它存在的意义是被子类继承实现。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">  public name: string;</span><br><span class="line">  public <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line">  public abstract say(); <span class="comment">// 抽象类中有抽象方法 say</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span> <span class="keyword">extends</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">    <span class="keyword">super</span>(name);</span><br><span class="line">  &#125;</span><br><span class="line">  public say() &#123; <span class="comment">// 继承自 Animal 的类，必须实现其抽象方法，此处若无该函数会报错</span></span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> animal: Animal = <span class="keyword">new</span> Animal(<span class="string">'wang'</span>); <span class="comment">// 编译报错：无法创建抽象类实例</span></span><br><span class="line"><span class="keyword">let</span> dog: Dog = <span class="keyword">new</span> Dog(<span class="string">'wang'</span>); <span class="comment">// 编译通过</span></span><br></pre></td></tr></table></figure>
-<h2 id="六、接口"><a href="#六、接口" class="headerlink" title="六、接口"></a>六、接口</h2><p>接口可以描述对象的外形，类的一部分外形。</p>
-<h3 id="1-接口描述对象"><a href="#1-接口描述对象" class="headerlink" title="1. 接口描述对象"></a>1. 接口描述对象</h3><p>当声明一个对象为某接口类型后，该对象属性需与接口属性保持一致。属性类型不能不同，不能多属性，不能少属性（除非接口中指明是可选属性，但这其实也是保持一致的一种方式）。此外，接口中可以由任意属性，即可以不写明属性名。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">interface IPerson &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age: number;</span><br><span class="line">  [prop: string]: any;</span><br><span class="line">  [index: number]: string;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person: IPerson;</span><br><span class="line">person = &#123;</span><br><span class="line">  name: <span class="string">"tuffy"</span>,</span><br><span class="line">  age: <span class="number">12</span>,</span><br><span class="line">  hobby: <span class="string">"123"</span></span><br><span class="line">&#125;;</span><br><span class="line">person[<span class="number">0</span>] = <span class="string">"123"</span>;</span><br></pre></td></tr></table></figure>
-<p>特别的，当定义了某个类型字段名的任意属性后，同类型字段的属性的类型必须是其同类型或其子类型，如下面编译将会报错：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">interface IPerson &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age: number; <span class="comment">// 编译报错</span></span><br><span class="line">  [prop: string]: string;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person: IPerson;</span><br><span class="line">person = &#123;</span><br><span class="line">  name: <span class="string">"tuffy"</span>,</span><br><span class="line">  age: <span class="number">12</span>,</span><br><span class="line">  hobby: <span class="string">"123"</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>接口的只读属性，只读是指该接口的这个属性不能被重新赋值，只能通过赋值给这个对象得以更新这个属性。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">interface IPerson &#123;</span><br><span class="line">  readonly name: string,</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person: IPerson;</span><br><span class="line">person.name = <span class="string">'tuffy'</span>; <span class="comment">// 编译报错。即使person还未被赋值过，也不能直接赋值这个属性</span></span><br><span class="line"></span><br><span class="line">interface IPerson &#123;</span><br><span class="line">  readonly name: string,</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person: IPerson;</span><br><span class="line">person = &#123;</span><br><span class="line">  name: <span class="string">'tuffy'</span>,</span><br><span class="line">  age: <span class="number">12</span></span><br><span class="line">&#125;;</span><br><span class="line">person = &#123;</span><br><span class="line">  name: <span class="string">'tuffy1'</span>, <span class="comment">// 编译通过。这样赋值整个对象是可以的</span></span><br><span class="line">  age: <span class="number">12</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="2-接口描述类数组"><a href="#2-接口描述类数组" class="headerlink" title="2. 接口描述类数组"></a>2. 接口描述类数组</h3><p>类数组与数组是不同的，可以结合任意属性描述类数组。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">interface IArgument &#123;</span><br><span class="line">  [index: number]: any;</span><br><span class="line">  length: number;</span><br><span class="line">  callee: <span class="built_in">Function</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-接口描述函数"><a href="#3-接口描述函数" class="headerlink" title="3. 接口描述函数"></a>3. 接口描述函数</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">interface IAdd &#123;</span><br><span class="line">  (a: number, b?: number, c?: number): number</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> add: IAdd = <span class="function"><span class="keyword">function</span> (<span class="params">a: number, b?: number, c?: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  (name: string): string;</span><br><span class="line">  age: number;</span><br><span class="line">  setName(): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">personFun</span>(<span class="params"></span>): <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> person = <span class="xml"><span class="tag">&lt;<span class="name">Person</span>&gt;</span>function(name: string): string &#123; return 'tuffy' &#125;;</span></span><br><span class="line"><span class="xml">  person.age = 12;</span></span><br><span class="line"><span class="xml">  person.setName = function(): void &#123;&#125;;</span></span><br><span class="line"><span class="xml">  return person;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
-<h3 id="4-接口被类实现-与-接口继承类"><a href="#4-接口被类实现-与-接口继承类" class="headerlink" title="4. 接口被类实现 与 接口继承类"></a>4. 接口被类实现 与 接口继承类</h3><p>（1）接口被类实现：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">interface IInfo &#123;</span><br><span class="line">  name: string;</span><br><span class="line">&#125;</span><br><span class="line">interface IClasses &#123;</span><br><span class="line">  className: string;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="title">implements</span> <span class="title">IInfo</span>, <span class="title">IClasses</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 一个类可以实现多个接口</span></span><br><span class="line">  name: string;</span><br><span class="line">  className: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>（2）接口继承类</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InfoManage</span> </span>&#123;</span><br><span class="line">  role: number;</span><br><span class="line">  public setRole(role: number) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">interface IInfo extends InfoManage &#123;</span><br><span class="line">  name: string</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> info: IInfo = &#123;</span><br><span class="line">  name: <span class="string">'tuffy'</span>,</span><br><span class="line">  role: <span class="number">1</span>,</span><br><span class="line">  setRole: <span class="function"><span class="keyword">function</span> (<span class="params">role: number</span>) </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="七、type"><a href="#七、type" class="headerlink" title="七、type"></a>七、type</h2><h3 id="1-type-与-interface-的相同与继承"><a href="#1-type-与-interface-的相同与继承" class="headerlink" title="1. type 与 interface 的相同与继承"></a>1. type 与 interface 的相同与继承</h3><p>当描述对象时，type 与 interface 表现很相似，都可以进行继承，并且两者之间可以互相继承：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 语法略有不同，type 需要等号</span></span><br><span class="line">interface IUser1 &#123;</span><br><span class="line">  name: string;</span><br><span class="line">&#125;</span><br><span class="line">type IUser2 = &#123;</span><br><span class="line">  name: string</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// interface 与 type 的继承</span></span><br><span class="line">interface IUser1 &#123;</span><br><span class="line">  name: string;</span><br><span class="line">&#125;</span><br><span class="line">interface IUserExtend1 extends IUser1 &#123;</span><br><span class="line">  age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> userExtend: IUserExtend1 = &#123;</span><br><span class="line">  name: <span class="string">"tuffy"</span>,</span><br><span class="line">  age: <span class="number">123</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">type IUser2 = &#123;</span><br><span class="line">  name: string</span><br><span class="line">&#125;;</span><br><span class="line">type IUserExtend2 = IUser2 &amp; &#123;</span><br><span class="line">  age: number</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> userExtend2: IUserExtend2 = &#123;</span><br><span class="line">  name: <span class="string">"tuffy"</span>,</span><br><span class="line">  age: <span class="number">123</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// interface 和 type 之间相互继承也是可以的</span></span><br><span class="line"><span class="comment">// interface IUserExtend1 extends IUser2 &#123;&#125;</span></span><br><span class="line"><span class="comment">// type IUserExtend2 = IUser1 &amp; &#123;&#125;</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-type-与-interface-的不同"><a href="#2-type-与-interface-的不同" class="headerlink" title="2. type 与 interface 的不同"></a>2. type 与 interface 的不同</h3><p>不同的是，type 也可以描述一个基本数据类型（即给基本数据类型别名），联合类型</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type s = string; <span class="comment">// 相当于给了string类型一个别名s</span></span><br><span class="line">type IUser2 = &#123;</span><br><span class="line">  name: string</span><br><span class="line">&#125;;</span><br><span class="line">type IUser3 = s | IUser2;</span><br><span class="line"><span class="keyword">let</span> typeUser: IUser3;</span><br><span class="line">typeUser = <span class="string">"123"</span>; <span class="comment">// 编译通过</span></span><br><span class="line">typeUser = &#123; <span class="attr">name</span>: <span class="string">"123"</span> &#125;; <span class="comment">// 编译通过</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 利用 type 限制了 str 的几种可能取值</span></span><br><span class="line">type str = <span class="string">"str1"</span> | <span class="string">"str2"</span> | <span class="string">"str3"</span>;</span><br><span class="line"><span class="keyword">let</span> strNew: str;</span><br><span class="line">strNew = <span class="string">"str1"</span>;</span><br><span class="line">strNew = <span class="string">"str"</span>;</span><br></pre></td></tr></table></figure>
-<p>而 interface 的合并，type 则没有：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面是可行的，IUser1 会合并</span></span><br><span class="line">interface IUser1 &#123;</span><br><span class="line">  name: string;</span><br><span class="line">&#125;</span><br><span class="line">interface IUser1 &#123;</span><br><span class="line">  age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> user: IUser1 = &#123;</span><br><span class="line">  name: <span class="string">"tuffy"</span>,</span><br><span class="line">  age: <span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面是不可行的，会报错</span></span><br><span class="line">type IUser2 = &#123;</span><br><span class="line">  <span class="comment">// 编译报错</span></span><br><span class="line">  name: string</span><br><span class="line">&#125;;</span><br><span class="line">type IUser2 = &#123;</span><br><span class="line">  <span class="comment">// 编译报错</span></span><br><span class="line">  age: number</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="八、泛型"><a href="#八、泛型" class="headerlink" title="八、泛型"></a>八、泛型</h2><p>实现函数、接口或者类的时候，一些属性需要保证是同一类型，但具体是什么类型需要使用时确定，这时可以使用泛型。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">interface Lengthwise &#123;</span><br><span class="line">  length: number;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loggingIdentity</span>&lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">Lengthwise</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123; <span class="comment">// 使得泛型T一定要有属性length</span></span><br><span class="line">  <span class="built_in">console</span>.log(arg.length);</span><br><span class="line">  <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>泛型函数：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">interface GenericIdentityFn &#123;</span><br><span class="line">  &lt;T&gt;(arg: T): T;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> myIdentity: GenericIdentityFn = identity;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 另一种写法</span></span><br><span class="line">interface GenericIdentityFn&lt;T&gt; &#123;</span><br><span class="line">  (arg: T): T;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">identity</span>&lt;<span class="title">T</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> myIdentity: GenericIdentityFn&lt;number&gt; = identity;</span><br></pre></td></tr></table></figure>
-<h2 id="九、元组"><a href="#九、元组" class="headerlink" title="九、元组"></a>九、元组</h2><p>元组是数组，但是指定了 index 对应的元素的类型。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当直接给某元组类型的变量赋值时，元素数不能多，也不能少，类型顺序也不能换</span></span><br><span class="line">type tupleArr1 = [string, number];</span><br><span class="line"><span class="keyword">let</span> tArr1: tupleArr1;</span><br><span class="line">tArr = [<span class="string">"tuffy"</span>, <span class="number">12</span>]; <span class="comment">// 编译通过</span></span><br><span class="line">tArr = [<span class="string">"tuffy"</span>]; <span class="comment">// 编译报错</span></span><br><span class="line">tArr = [<span class="string">"tuffy"</span>, <span class="number">12</span>, <span class="number">2019</span>]; <span class="comment">// 编译报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以通过给变量的某index赋值</span></span><br><span class="line">type tupleArr2 = [string, number];</span><br><span class="line"><span class="keyword">let</span> tArr2: tupleArr2;</span><br><span class="line">tArr2[<span class="number">0</span>] = <span class="string">"tuffy"</span>; <span class="comment">// 编译通过</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以通过push等方法，使数量超过</span></span><br><span class="line">type tupleArr3 = [string, number];</span><br><span class="line"><span class="keyword">let</span> tArr3: tupleArr3;</span><br><span class="line">tArr3 = [<span class="string">"tuffy"</span>, <span class="number">12</span>];</span><br><span class="line">tArr3.push(<span class="number">2019</span>); <span class="comment">// 编译通过</span></span><br><span class="line">tArr3.push(<span class="string">"shenzhen"</span>); <span class="comment">// 编译通过</span></span><br><span class="line">tArr2.push(<span class="literal">true</span>); <span class="comment">// 编译报错，只能push该元组各index类型的联合类型，意思是这里只能push的类型是“string|number”</span></span><br></pre></td></tr></table></figure>
-<h2 id="十、类型断言"><a href="#十、类型断言" class="headerlink" title="十、类型断言"></a>十、类型断言</h2><p>可以手动指定一个值的类型。语法：&lt;类型&gt;值 或者 值 as 类型。（类型断言不是类型转换）</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getLength</span>(<span class="params">data: string | number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ((<span class="xml"><span class="tag">&lt;<span class="name">string</span>&gt;</span>data).length) &#123; // 此处不加类型断言会编译报错，因为number没有length属性</span></span><br><span class="line">    return (&lt;string&gt;data).length; // 此处不加类型断言会编译报错，因为number没有length属性</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return data.toString().length;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="十一、声明语句与声明文件"><a href="#十一、声明语句与声明文件" class="headerlink" title="十一、声明语句与声明文件"></a>十一、声明语句与声明文件</h2><h3 id="1-全局变量声明文件"><a href="#1-全局变量声明文件" class="headerlink" title="1. 全局变量声明文件"></a>1. 全局变量声明文件</h3><p>当我们使用 &lt;script>&lt;/script> 引入一个第三方库 jquery 时，可以直接使用 \$ 或者 jQuery，虽然使用上是正常的，但 ts 编译时会报错，表示没有找到这个变量，此时可以做一下类似声明 declare var jQuery: (selector: string): any; 来应对编译器的检查，使之知道 jQuery 是一个全局变量不必报错。声明本身只是一个对于编译器的变量及其类型的告知，并没有赋值之类的意义。<br>一个文件的声明语句可以放在对应声明文件中，一般以 .d.ts 后缀结尾。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">declare <span class="keyword">var</span> str: string</span><br><span class="line">declare <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">s: string</span>): <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="title">declare</span> <span class="title">enum</span> <span class="title">Num</span></span>&#123;&#125;</span><br><span class="line">declare <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;&#125;</span><br><span class="line">declare namespace Obj &#123;&#125;</span><br><span class="line">interface IProp &#123;&#125; <span class="comment">// interface 和 type 前不需要 declare 也可以表示声明</span></span><br><span class="line">type IType = &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>声明是可以进行合并的，但它们需是同一类型，比如都是 string，都是对象等。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">declare <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">s: string</span>): <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="title">declare</span> <span class="title">namespace</span> <span class="title">fun</span> </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> settting: any</span><br><span class="line">&#125;</span><br><span class="line">fun(<span class="string">'321'</span>);</span><br><span class="line">fun.settting = <span class="string">'123'</span>;</span><br></pre></td></tr></table></figure>
-<p>下面的则会报错：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">declare <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">s: string</span>): <span class="title">string</span>;</span></span><br><span class="line"><span class="function"><span class="title">declare</span> <span class="title">var</span> <span class="title">fun</span>: <span class="title">string</span>; // 报错</span></span><br></pre></td></tr></table></figure>
-<p>全局变量声明文件不能有 import 或者 export，不然将被视为一个包或者库，那么当该文件需要引入其他库的声明文件或者其他全局变量声明文件时，使用三斜线指令：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference types="jquery" /&gt; // types用来指明对某一个库的依赖</span></span><br><span class="line"><span class="comment">/// &lt;reference path="helloUtil.d.ts" /&gt; // path用来指明对其他文件的依赖</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-局部变量声明文件"><a href="#2-局部变量声明文件" class="headerlink" title="2. 局部变量声明文件"></a>2. 局部变量声明文件</h3><p>当 declare 前加上导出 export 时，此时该文件中变量不再是全局变量，而是需要相应文件中 import 才能应用的变量声明。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./types/hello.d.ts</span></span><br><span class="line"></span><br><span class="line">declare <span class="keyword">var</span> str: string</span><br><span class="line">declare <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">s: string</span>): <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="title">declare</span> <span class="title">enum</span> <span class="title">Num</span> </span>&#123; &#125;</span><br><span class="line">declare <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; &#125;</span><br><span class="line">declare namespace Obj &#123; &#125;</span><br><span class="line">type IType = &#123;&#125;</span><br><span class="line"><span class="keyword">export</span> interface IProp &#123; &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./hello.ts</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; IProp &#125; <span class="keyword">from</span> <span class="string">"./types/hello"</span>;</span><br><span class="line"><span class="keyword">let</span> prop: IProp = &#123;</span><br><span class="line">  <span class="comment">// 不报错</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fun(<span class="string">"321"</span>); <span class="comment">// 报错</span></span><br><span class="line">fun.settting = <span class="string">"123"</span>;</span><br></pre></td></tr></table></figure>
-<p>如果在局部变量声明文件中，某个变量希望被扩展成全局变量，可以使用下面方法：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./types/hello.d.ts</span></span><br><span class="line">declare global &#123; <span class="keyword">var</span> num: number &#125;</span><br><span class="line">declare <span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">s: string</span>): <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="title">export</span> <span class="title">interface</span> <span class="title">IProp</span> </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ./hello.ts</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; IProp &#125; <span class="keyword">from</span> <span class="string">"./types/hello"</span>;</span><br><span class="line"><span class="keyword">let</span> prop: IProp = &#123;</span><br><span class="line">  <span class="comment">// 不报错</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fun(<span class="string">"321"</span>); <span class="comment">// 报错</span></span><br><span class="line">fun.settting = <span class="string">"123"</span>;</span><br><span class="line"></span><br><span class="line">num = <span class="number">123</span>; <span class="comment">// 不报错</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1721,7 +1696,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

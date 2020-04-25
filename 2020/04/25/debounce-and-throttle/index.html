@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="防抖（debounce）场景 在用户的注册页，对于用户填写的用户名，我们需要检测该用户名是否已经被注册过，所以会监听用户的按键事件，当用户输入内容改变时，发请求验证该用户名是否被注册过。但这时，如果用户不断进行输入，其实并不需要我们每一次输入都去请求，而可以在用户暂停某个时间长度的情况下（比如 100ms）再发请求。一些“搜索”事件也是一样的，许多情况下我们不需要每一次按键事件都进行搜索操作，这样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="debounce and throttle">
+<meta property="og:url" content="http://yoursite.com/2020/04/25/debounce-and-throttle/index.html">
+<meta property="og:site_name" content="写字的地方">
+<meta property="og:description" content="防抖（debounce）场景 在用户的注册页，对于用户填写的用户名，我们需要检测该用户名是否已经被注册过，所以会监听用户的按键事件，当用户输入内容改变时，发请求验证该用户名是否被注册过。但这时，如果用户不断进行输入，其实并不需要我们每一次输入都去请求，而可以在用户暂停某个时间长度的情况下（比如 100ms）再发请求。一些“搜索”事件也是一样的，许多情况下我们不需要每一次按键事件都进行搜索操作，这样">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-25T14:51:31.742Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="debounce and throttle">
+<meta name="twitter:description" content="防抖（debounce）场景 在用户的注册页，对于用户填写的用户名，我们需要检测该用户名是否已经被注册过，所以会监听用户的按键事件，当用户输入内容改变时，发请求验证该用户名是否被注册过。但这时，如果用户不断进行输入，其实并不需要我们每一次输入都去请求，而可以在用户暂停某个时间长度的情况下（比如 100ms）再发请求。一些“搜索”事件也是一样的，许多情况下我们不需要每一次按键事件都进行搜索操作，这样">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/25/debounce-and-throttle/">
+
+
+
+
+
+  <title>debounce and throttle | 写字的地方</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写字的地方</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/debounce-and-throttle/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="J.Y.">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写字的地方">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">debounce and throttle</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-25T22:51:15+08:00">
+                2020-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/25/debounce-and-throttle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2020/04/25/debounce-and-throttle/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="防抖（debounce）"><a href="#防抖（debounce）" class="headerlink" title="防抖（debounce）"></a>防抖（debounce）</h2><h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><ol>
+<li><p>在用户的注册页，对于用户填写的用户名，我们需要检测该用户名是否已经被注册过，所以会监听用户的按键事件，当用户输入内容改变时，发请求验证该用户名是否被注册过。但这时，如果用户不断进行输入，其实并不需要我们每一次输入都去请求，而可以在用户暂停某个时间长度的情况下（比如 100ms）再发请求。一些“搜索”事件也是一样的，许多情况下我们不需要每一次按键事件都进行搜索操作，这样会让操作进行得非常频繁，而事实上我们只需要用户按键暂停某个时间长度的情况下才进行相应操作。</p>
+</li>
+<li><p>假设我们对 resize 事件进行了监听，并有一些处理程序（比如在 resize 事件中进行 dom 操作），其高频率更改可能导致浏览器挂起甚至崩溃。此时我们同样可以利用防抖，让 resize 事件结束一段事件后再进行处理操作。</p>
+</li>
+</ol>
+<h3 id="原理与实现"><a href="#原理与实现" class="headerlink" title="原理与实现"></a>原理与实现</h3><p>防抖的基本思想是：某些代码不可以在没有间断的情况下连续重复执行。</p>
+<p>首先看一个没有防抖的例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    solve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>代码中有一个监听 <code>#input</code> 按键的事件，每一次按键都会触发执行函数 <code>solve</code>。</p>
+<p>接着我们写一个防抖的函数：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"debounce-input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function debounce(fun, delay) &#123;</span></span><br><span class="line"><span class="undefined">    return function(...args) &#123;</span></span><br><span class="line"><span class="undefined">      clearTimeout(fun.tId);</span></span><br><span class="line"><span class="undefined">      let _this = this;</span></span><br><span class="line"><span class="undefined">      let _args = args;</span></span><br><span class="line"><span class="undefined">      fun.tId = setTimeout(function() &#123;</span></span><br><span class="line"><span class="undefined">        fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">      &#125;, delay);</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  const debounceSolve = debounce(solve, 1000);</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("debounce-input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    debounceSolve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上述代码执行的结果是：当不间断地按键时，控制台不会打印，只有按键后停止 1000 ms 时，控制台才会打印。</p>
+<p>代码中同样有一个监听 <code>#ebounce-input</code> 按键的事件，不同的是，我们对函数 <code>solve</code> 进行 <code>debounce</code>，得到函数 <code>debounceSolve</code>，每一次按键执行函数 <code>debounceSolve</code>。</p>
+<p>对函数 <code>solve</code> 进行 <code>debounce</code> 其实是返回了一个函数，当调用这个函数时（input 监听事件中调用），第一次调用会创建一个定时器，在指定时间间隔之后再执行代码。第二次调用函数时，它会清除前一次的定时器并设置另一个。如果前一个定时器已经执行过了，这个操作就没有任何意义。然而，如果前一个定时器尚未执行，其实就是将其替换成一个新的定时器。</p>
+<p>意思就是说：处理程序并不会在调用的时候立刻执行，而是设置定时器在指定时间间隔后（delay）执行，如果在这段时间内，又调用了这个函数，那么清掉之前的定时器重新定时。只有在执行函数的请求停止了一段时间（delay），处理程序（solve）才会执行。</p>
+<h2 id="节流（throttle）"><a href="#节流（throttle）" class="headerlink" title="节流（throttle）"></a>节流（throttle）</h2><h3 id="场景-1"><a href="#场景-1" class="headerlink" title="场景"></a>场景</h3><ol>
+<li><p>当页面不断进行滚动时，监听滚动事件并执行处理程序（比如加载更多内容），这时不需要每一次滚动都执行，而只需要在不断的滚动中每隔一段时间执行一次。</p>
+</li>
+<li><p>鼠标在页面上进行高频不断的点击操作时（比如游戏中的鼠标点击攻击），只需要对用户的操作进行一定时间间隔的处理即可。</p>
+</li>
+</ol>
+<h3 id="原理与实现-1"><a href="#原理与实现-1" class="headerlink" title="原理与实现"></a>原理与实现</h3><p>节流的主要应用场景和处理方法是：事件的触发不论如何高频，某些代码都只会在触发中每隔一段时间执行一次。</p>
+<p>还是看一个这个例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    solve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>代码中有一个监听 <code>#input</code> 按键的事件，每一次按键都会触发执行函数 <code>solve</code>。</p>
+<p>接着我们写一个节流的函数：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"throttle-input"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function solve(e) &#123;</span></span><br><span class="line"><span class="undefined">    console.log(e.target.value);</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function throttle(fun, delay) &#123;</span></span><br><span class="line"><span class="undefined">    let prevTime;</span></span><br><span class="line"><span class="undefined">    return function(...args) &#123;</span></span><br><span class="line"><span class="undefined">      let _this = this;</span></span><br><span class="line"><span class="undefined">      let _args = args;</span></span><br><span class="line"><span class="undefined">      let currentTime = +new Date();</span></span><br><span class="line"><span class="undefined">      let remainingTime = delay - (currentTime - prevTime);</span></span><br><span class="line"><span class="undefined">      if (remainingTime &gt; 0) &#123;</span></span><br><span class="line"><span class="undefined">        clearTimeout(fun.tId);</span></span><br><span class="line"><span class="undefined">        fun.tId = setTimeout(function() &#123;</span></span><br><span class="line"><span class="undefined">          fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">        &#125;, remainingTime);</span></span><br><span class="line"><span class="undefined">      &#125; else &#123;</span></span><br><span class="line"><span class="undefined">        fun.apply(_this, _args);</span></span><br><span class="line"><span class="undefined">        prevTime = +new Date();</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  const throttleSolve = throttle(solve, 1000);</span></span><br><span class="line"><span class="undefined">  let input = document.getElementById("throttle-input");</span></span><br><span class="line"><span class="undefined">  input.addEventListener("keydown", function(e) &#123;</span></span><br><span class="line"><span class="undefined">    throttleSolve(e);</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上述代码执行的结果是：当不间断地按键时，控制台只会每隔 1000 ms 打印一次。</p>
+<p>代码中同样有一个监听 <code>#throttle-input</code> 按键的事件，不同的是，我们对函数 <code>solve</code> 进行 <code>throttle</code>，得到函数 <code>throttleSolve</code>，每一次按键执行函数 <code>throttleSolve</code>。</p>
+<p>对函数 <code>solve</code> 进行 <code>throttle</code> 其实是返回了一个函数，当调用这个函数时（input 监听事件中调用），第一次会执行执行处理程序，并把 prevTime（标记上一次的执行时间）设置为当前的时间，第二次调用函数时，如果与上一次调用的间隔时间超过我们设置的 delay，那么处理程序依然会直接执行，但如果调用的间隔时间短于 delay，那么需要清除前一次的定时器（如果有的话）并设置另一个，在 remainingTime（即满足了 delay 间隔还需要的时间）后执行</p>
+<p>意思就是说：两次处理程序之间<strong>至少</strong>间隔指定时间段后才执行一次，期间如何高频操作都不会执行。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/25/flex-布局/" rel="next" title="flex 布局">
+                <i class="fa fa-chevron-left"></i> flex 布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">J.Y.</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#防抖（debounce）"><span class="nav-number">1.</span> <span class="nav-text">防抖（debounce）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景"><span class="nav-number">1.1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理与实现"><span class="nav-number">1.2.</span> <span class="nav-text">原理与实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节流（throttle）"><span class="nav-number">2.</span> <span class="nav-text">节流（throttle）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景-1"><span class="nav-number">2.1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理与实现-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理与实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">J.Y.</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'Tuffy1',
+            repo: 'git-comments',
+            
+            lang: "en" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '1390553a65f01ffcdcf52ac6625cdc4b7a0dd839',
+            
+                client_id: '3c4479028843189e7475'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
